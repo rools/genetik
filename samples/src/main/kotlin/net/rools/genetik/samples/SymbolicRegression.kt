@@ -1,7 +1,6 @@
 package net.rools.genetik.samples
 
 import net.rools.genetik.*
-import net.rools.genetik.cache.NoFitnessCache
 import net.rools.genetik.geneticoperation.ReproductionOperation
 import net.rools.genetik.geneticoperation.SubtreeCrossoverOperation
 import net.rools.genetik.geneticoperation.SubtreeMutationOperation
@@ -43,7 +42,6 @@ fun main() {
     val runner = GeneticRunner(
         params = params,
         evolutionListeners = listOf(LoggingEvolutionListener()),
-        fitnessCache = NoFitnessCache()
     )
 
     runner.evolve()

@@ -14,7 +14,7 @@ import kotlin.reflect.full.isSubclassOf
 class GeneticRunner<T : Any, VH>(
     private val params: GeneticParameters<T, VH>,
     private val evolutionListeners: List<EvolutionListener<T, VH>>,
-    private val fitnessCache: FitnessCache,
+    private val fitnessCache: FitnessCache? = null,
 ) {
 
     private val parsimonySign: Float = when (params.optimizationType) {
@@ -72,7 +72,7 @@ class GeneticRunner<T : Any, VH>(
         val individualsToEvaluate = mutableListOf<Individual<out T, VH>>()
 
         population.distinct().forEach { individual ->
-            when (val cachedFitness = fitnessCache.read(individual.rootNode)) {
+            when (val cachedFitness = fitnessCache?.read(individual.rootNode)) {
                 null -> individualsToEvaluate += individual
                 else -> fitnessValues[individual.rootNode] = cachedFitness
             }
@@ -83,7 +83,9 @@ class GeneticRunner<T : Any, VH>(
         }
         fitnessValues += evaluations
 
-        evaluations.forEach { (node, fitness) -> fitnessCache.write(node, fitness) }
+        fitnessCache?.apply {
+            evaluations.forEach { (node, fitness) -> write(node, fitness) }
+        }
 
         return population
             .map { EvaluatedIndividual(it.rootNode, fitnessValues.getValue(it.rootNode)) }
