@@ -22,10 +22,7 @@ fun main() {
 
         variable("x") { v: VariableHolder -> v.x },
 
-        ephemeralConstant(
-            mutator = { value, factor -> value * factor },
-            generator = { random -> random.nextInt(-10, 10).toDouble() }
-        )
+        ephemeralConstant{ random -> random.nextInt(-10, 10).toDouble() }
     )
 
     val params = GeneticParameters(

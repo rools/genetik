@@ -9,8 +9,6 @@ abstract class EphemeralConstantType<T : Any>(type: KClass<T>) : NodeType<T, Any
     }
 
     abstract fun generateValue(random: Random): T
-
-    abstract fun mutated(value: T, factor: Double): T
 }
 
 class EphemeralConstantNode<T : Any> : Node<T, EphemeralConstantType<T>, Any> {
@@ -58,19 +56,13 @@ class EphemeralConstantNode<T : Any> : Node<T, EphemeralConstantType<T>, Any> {
     override fun hashCode(): Int {
         return 31 * value.hashCode() + children.hashCode()
     }
-
-    fun mutated(factor: Double): EphemeralConstantNode<T> {
-        return EphemeralConstantNode(type, children, type.mutated(value, factor))
-    }
 }
 
 inline fun <reified T : Any> ephemeralConstant(
-    crossinline mutator: (value: T, factor: Double) -> T,
     crossinline generator: (random: Random) -> T
 ): EphemeralConstantType<T> {
 
     return object : EphemeralConstantType<T>(T::class) {
         override fun generateValue(random: Random): T = generator(random)
-        override fun mutated(value: T, factor: Double): T = mutator(value, factor)
     }
 }
