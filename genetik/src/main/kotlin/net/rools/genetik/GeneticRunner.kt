@@ -28,7 +28,7 @@ class GeneticRunner<T : Any, VH>(
         }
     }
 
-    fun evolve() {
+    fun evolve(): EvaluatedIndividual<out T, VH> {
         evolutionListeners.forEach { listener ->
             listener.onEvolutionStarted()
             listener.onNewGeneration(0)
@@ -41,6 +41,8 @@ class GeneticRunner<T : Any, VH>(
 
         var generation = 0
 
+        var solution: EvaluatedIndividual<out T, VH>
+
         while (true) {
             evolutionListeners.forEach { it.onBeforePopulationEvaluated(population) }
 
@@ -49,6 +51,8 @@ class GeneticRunner<T : Any, VH>(
             evolutionListeners.forEach { it.onAfterPopulationEvaluated(evaluatedPopulation) }
 
             generation++
+
+            solution = params.solutionDesignation.getSolution(evaluatedPopulation, params)
 
             if (params.terminationCriterion.shouldTerminate(params.optimizationType, generation, evaluatedPopulation)) {
                 break
@@ -65,6 +69,8 @@ class GeneticRunner<T : Any, VH>(
         }
 
         evolutionListeners.forEach { it.onEvolutionEnded() }
+
+        return solution
     }
 
     private fun evaluatePopulation(population: List<Individual<out T, VH>>): List<EvaluatedIndividual<out T, VH>> {

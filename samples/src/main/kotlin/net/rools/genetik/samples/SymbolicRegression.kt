@@ -6,7 +6,9 @@ import net.rools.genetik.geneticoperation.SubtreeCrossoverOperation
 import net.rools.genetik.geneticoperation.SubtreeMutationOperation
 import net.rools.genetik.initializer.RampedHalfAndHalfInitializer
 import net.rools.genetik.listener.LoggingEvolutionListener
+import net.rools.genetik.solution.BestSoFarSolutionDesignation
 import net.rools.genetik.termination.GenerationTerminationCriterion
+import net.rools.genetik.util.toStringInfix
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -32,6 +34,7 @@ fun main() {
             ReproductionOperation(probability = 1.0)
         ),
         terminationCriterion = GenerationTerminationCriterion(100),
+        solutionDesignation = BestSoFarSolutionDesignation(),
         random = Random(seed = 1),
         populationSize = 100_000,
         maxNodeDepth = 4,
@@ -44,7 +47,9 @@ fun main() {
         evolutionListeners = listOf(LoggingEvolutionListener()),
     )
 
-    runner.evolve()
+    val solution = runner.evolve()
+
+    println("Expression: ${solution.rootNode.toStringInfix()}")
 }
 
 private class MeanSquaredErrorEvaluator : FitnessEvaluator<Int, Int> {
