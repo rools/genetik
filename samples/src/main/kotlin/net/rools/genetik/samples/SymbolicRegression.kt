@@ -53,7 +53,7 @@ fun main() {
 }
 
 private class MeanSquaredErrorEvaluator : FitnessEvaluator<Int, Int> {
-    private fun targetExpression(x: Int) = (7 * x - 3) * x + 5
+    private fun targetExpression(x: Int) = 7 * x * x - 3 * x + 5
 
     private val dataset: List<Pair<Int, Int>> = (-10..10).map { x ->
         x to targetExpression(x)
