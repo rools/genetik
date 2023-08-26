@@ -3,26 +3,27 @@ package net.rools.genetik.solution
 import net.rools.genetik.EvaluatedIndividual
 import net.rools.genetik.GeneticParameters
 import net.rools.genetik.OptimizationType
+import net.rools.genetik.util.isBetterThan
 
 class BestSoFarSolutionDesignation<T : Any, VH> : SolutionDesignation<T, VH> {
-    private var bestSoFarIndividual: EvaluatedIndividual<out T, VH>? = null
+    private var solution: EvaluatedIndividual<out T, VH>? = null
 
     override fun getSolution(
         population: List<EvaluatedIndividual<out T, VH>>,
         params: GeneticParameters<T, VH>
     ): EvaluatedIndividual<out T, VH> {
-        val bestIndividual = when (params.optimizationType) {
+        val best = when (params.optimizationType) {
             OptimizationType.MAXIMIZE -> population.maxBy { it.fitness }
             OptimizationType.MINIMIZE -> population.minBy { it.fitness }
         }
 
-        val currentBestSoFar = bestSoFarIndividual
+        val currentSolution = solution
 
-        return if (currentBestSoFar == null || bestIndividual.fitness > currentBestSoFar.fitness) {
-            bestSoFarIndividual = bestIndividual
-            bestIndividual
+        return if (currentSolution == null || best.isBetterThan(currentSolution, params.optimizationType)) {
+            solution = best
+            best
         } else {
-            currentBestSoFar
+            currentSolution
         }
     }
 }
