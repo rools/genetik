@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
+    implementation("org.knowm.xchart:xchart:3.8.5")
+
     implementation(project(":genetik"))
-    implementation(project(":charting-listener"))
 }

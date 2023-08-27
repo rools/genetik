@@ -44,7 +44,10 @@ fun main() {
 
     val runner = GeneticRunner(
         params = params,
-        evolutionListeners = listOf(LoggingEvolutionListener()),
+        evolutionListeners = listOf(
+            LoggingEvolutionListener(),
+            ChartingEvolutionListener()
+        ),
     )
 
     val solution = runner.evolve()
