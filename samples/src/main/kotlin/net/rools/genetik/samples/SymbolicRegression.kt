@@ -1,6 +1,7 @@
 package net.rools.genetik.samples
 
 import net.rools.genetik.*
+import net.rools.genetik.geneticoperation.EliteOperation
 import net.rools.genetik.geneticoperation.ReproductionOperation
 import net.rools.genetik.geneticoperation.SubtreeCrossoverOperation
 import net.rools.genetik.geneticoperation.SubtreeMutationOperation
@@ -29,6 +30,7 @@ fun main() {
         fitnessEvaluator = MeanSquaredErrorEvaluator(),
         populationInitializer = RampedHalfAndHalfInitializer(),
         geneticOperations = listOf(
+            EliteOperation(10),
             SubtreeCrossoverOperation(probability = 0.8),
             SubtreeMutationOperation(probability = 0.25),
             ReproductionOperation(probability = 1.0)
@@ -36,7 +38,7 @@ fun main() {
         terminationCriterion = GenerationTerminationCriterion(100),
         solutionDesignation = BestSoFarSolutionDesignation(),
         random = Random(seed = 1),
-        populationSize = 100_000,
+        populationSize = 5_000,
         maxNodeDepth = 4,
         optimizationType = OptimizationType.MINIMIZE,
         parsimonyCoefficient = 0.1,
@@ -56,9 +58,9 @@ fun main() {
 }
 
 private class MeanSquaredErrorEvaluator : FitnessEvaluator<Int, Int> {
-    private fun targetExpression(x: Int) = 7 * x * x - 3 * x + 5
+    private fun targetExpression(x: Int) = 4 * x * x * x + 7 * x * x - 3 * x + 5
 
-    private val dataset: List<Pair<Int, Int>> = (-10..10).map { x ->
+    private val dataset: List<Pair<Int, Int>> = (-50..50).map { x ->
         x to targetExpression(x)
     }
 
