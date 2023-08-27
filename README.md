@@ -4,7 +4,7 @@ A genetic programming implementation written in Kotlin.
 
 ## Sample
 
-Below is a symbolic regression sample that will attempt to evolve mathematical expressions using genetik. The target expression in this sample is $`f(x) = 7*x*x - 3*x + 5`$.
+Below is a symbolic regression sample that will attempt to evolve mathematical expressions using genetik. The target expression in this sample is $`f(x) = 4 x x x + 7 x x - 3 x + 5`$.
 
 The first step is to specify the function and terminal set for the problem. This sample specifies three basic arithmetic expressions, a variable *x* and an *ephemeral random constant* ranging from 1 to 10:
 
@@ -24,9 +24,9 @@ Then a `FitnessEvaluator` is defined which generates a dataset from the target e
 
 ```kotlin
 class MeanSquaredErrorEvaluator : FitnessEvaluator<Int, Int> {
-    private fun targetExpression(x: Int) =  7 * x * x - 3 * x + 5
+    private fun targetExpression(x: Int) =  4 * x * x * x + 7 * x * x - 3 * x + 5
 
-    private val dataset: List<Pair<Int, Int>> = (-10..10).map { x ->
+    private val dataset: List<Pair<Int, Int>> = (-50..50).map { x ->
         x to targetExpression(x)
     }
 
@@ -48,6 +48,7 @@ val params = GeneticParameters(
     fitnessEvaluator = MeanSquaredErrorEvaluator(),
     populationInitializer = RampedHalfAndHalfInitializer(),
     geneticOperations = listOf(
+        EliteOperation(10),
         SubtreeCrossoverOperation(probability = 0.8),
         SubtreeMutationOperation(probability = 0.25),
         ReproductionOperation(probability = 1.0)
@@ -55,7 +56,7 @@ val params = GeneticParameters(
     terminationCriterion = GenerationTerminationCriterion(100),
     solutionDesignation = BestSoFarSolutionDesignation(),
     random = Random(seed = 1),
-    populationSize = 100_000,
+    populationSize = 5_000,
     maxNodeDepth = 4,
     optimizationType = OptimizationType.MINIMIZE,
     parsimonyCoefficient = 0.1,
@@ -74,7 +75,7 @@ println("Expression: ${solution.rootNode.toStringInfix()}")
 If all goes well, the solution expression should be equivalent to (but not necessarily the same as) the target expression:
 
 ```
-Expression: (5 + (((7 * x) - 3) * x))
+Expression: (((7 + (x * 4)) * (x * x)) - ((x + x) - (5 - x)))
 ```
 
 ## License
